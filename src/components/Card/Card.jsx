@@ -2,19 +2,19 @@ import React from 'react';
 import styles from './styles.module.scss';
 import { CartContext } from '../../context';
 
-export const Card = ({ title, price, img, onPlus }) => {
+export const Card = ({ id, title, price, img, onPlus, favorited }) => {
   const [isAdded, setIsAdded] = React.useState(false);
-  const [like, setLiked] = React.useState(false);
+  const [like, setLiked] = React.useState(favorited);
   const { onAddFavorite } = React.useContext(CartContext);
   //   const { isAdded, setIsAdded } = React.useContext(CartContext);
 
   const handlePlus = () => {
-    onPlus({ title, price, img });
+    onPlus({ id, title, price, img });
     setIsAdded(!isAdded);
   };
 
   const onClickLike = () => {
-    like({ title, price, img });
+    onAddFavorite({ id, title, price, img });
     // console.log(like);
     setLiked(!like);
   };

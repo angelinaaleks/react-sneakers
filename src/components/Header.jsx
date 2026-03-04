@@ -7,13 +7,15 @@ export const Header = () => {
   //   console.log(cartOpened);
   return (
     <header className="d-flex justify-between align-center p-45">
-      <div className="d-flex align-center">
-        <img width={40} height={40} alt="logo" src="/img/logo.png" />
-        <div>
-          <h3>REACT SNEAKERS</h3>
-          <p className="opacity-3">Магазин лучших кроссовок</p>
+      <Link to="/">
+        <div className="d-flex align-center">
+          <img width={40} height={40} alt="logo" src="/img/logo.png" />
+          <div>
+            <h3>REACT SNEAKERS</h3>
+            <p className="opacity-3">Магазин лучших кроссовок</p>
+          </div>
         </div>
-      </div>
+      </Link>
       <ul className="d-flex">
         <li onClick={() => setCartOpened(true)} className="mr-30 d-flex align-center cu-p">
           <svg

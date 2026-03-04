@@ -3,10 +3,11 @@ import React from "react";
 import { Drawer } from "./components/Drawer";
 import { Header } from "./components/Header";
 import { CartContext } from "./context";
-import { Skeleton } from './components/Skeleton'
+// import { Skeleton } from './components/Skeleton'
 import axios from "axios";
 import { Routes, Route } from "react-router-dom";
 import { Home } from "./pages/Home";
+import { Favorites } from "./pages/Favorites";
 
 // const arr = [{ title: 'Мужские Кроссовки Nike Blazer Mid Suede', price: '12 999', img: 'img/sneakers/1.jpg' },
 // { title: 'Мужские Кроссовки Nike Air Max 270', price: '12 999', img: 'img/sneakers/2.jpg' },
@@ -37,6 +38,9 @@ function App() {
         axios.get(`https://6913056e52a60f10c823b49a.mockapi.io/cart`).then(res =>
             setCartItems(res.data)
         )
+
+        axios.get(`http://localhost:3001/favorite`).then(res => setFavorite(res.data))
+
     }, [value, sortChoice])
 
     // console.log(arr)
@@ -44,9 +48,21 @@ function App() {
     // console.log(sneakers)
     //console.log(cartItems)
 
-    const onPlus = (item) => {
-        axios.post(`https://6913056e52a60f10c823b49a.mockapi.io/cart`, item)
-        setCartItems(prev => [...prev, item])
+    // axios.post(`https://6913056e52a60f10c823b49a.mockapi.io/cart`, obj)
+    //     setCartItems(prev => [...prev, obj])
+
+    const onPlus = async (obj) => {
+        try {
+            if (cartItems.find(cartObj => cartObj.id === obj.id)) {
+                axios.delete(`https://6913056e52a60f10c823b49a.mockapi.io/cart${obj.id}`)
+                setFavorite((prev) => prev.filter((item) => item.id !== obj.id))
+            } else {
+                const { data } = await axios.post(`https://6913056e52a60f10c823b49a.mockapi.io/cart`, obj)
+                setCartItems((prev) => [...prev, data])
+            }
+        } catch (error) {
+            alert('Ошибка')
+        }
     }
 
     const onRemoveItem = (id) => {
@@ -78,12 +94,22 @@ function App() {
         }
     ]
 
-    const onAddFavorite = (item) => {
-        // axios.post('https://6913056e52a60f10c823b49a.mockapi.io/favorite', item)
-        setFavorite((prev) => [...prev, item])
+    const onAddFavorite = async (obj) => {
+        try {
+            if (favorite.find(favObj => favObj.id === obj.id)) {
+                axios.delete(`http://localhost:3001/favorite/${obj.id}`)
+                setFavorite((prev) => prev.filter((item) => item.id !== obj.id))
+            } else {
+                const { data } = await axios.post('http://localhost:3001/favorite', obj)
+                setFavorite((prev) => [...prev, data])
+                console.log(favorite)
+            }
+        } catch (error) {
+            alert('Ошибка')
+        }
     }
 
-    console.log(favorite)
+    // console.log(favorite)
 
     return (
         <CartContext.Provider value={{
@@ -99,7 +125,8 @@ function App() {
             sort,
             setSortChoice,
             setValue,
-            onPlus
+            onPlus,
+            favorite
         }}>
             <div className="wrapper clear">
                 {cartOpened && <Drawer onRemove={onRemoveItem} />}
@@ -109,11 +136,11 @@ function App() {
                     <Route path="/" element={
                         <Home />
                     } />
-                    <Route path="/favorites" element={<h1>fghdj</h1>} />
+                    <Route path="/favorites" element={<Favorites />} />
                 </Routes>
             </div>
         </CartContext.Provider>
     );
 }
 
-export default App;
+export default App

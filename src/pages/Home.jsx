@@ -56,7 +56,13 @@ export const Home = () => {
       {sneakers !== 'Not found' ? (
         <div className="sneakers">
           {sneakers.map((obj) => (
-            <Card {...obj} onClickPlus={() => console.log(obj)} key={obj.title} onPlus={onPlus} />
+            <Card
+              {...obj}
+              onClickPlus={() => console.log(obj)}
+              key={obj.title}
+              onPlus={onPlus}
+              favorited={false}
+            />
           ))}
         </div>
       ) : (
