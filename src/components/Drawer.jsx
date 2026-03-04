@@ -1,15 +1,25 @@
 import React from 'react';
+import { CartContext } from '../context';
 
-export const Drawer = () => {
+export const Drawer = ({ onRemove }) => {
+  const { setCartOpened } = React.useContext(CartContext);
+  const { cartItems } = React.useContext(CartContext);
+
   return (
-    <div style={{ display: 'none' }} className="overlay">
-      <div className="drawer d-flex flex-column">
+    <div className="overlay">
+      <div className="drawer d-flex flex-column justify-between">
         <h2 className="d-flex justify-between mb-30">
           Корзина
-          <img className="remove cu-p" src="/img/remove.svg" alt="remove" />
+          <img
+            onClick={() => setCartOpened(false)}
+            className="remove cu-p"
+            src="/img/remove.svg"
+            alt="remove"
+          />
         </h2>
-        <div className="items">
-          <div className="cartItem d-flex align-center mb-20">
+        {cartItems.length > 0 ? (
+          <div className="items">
+            {/* <div className="cartItem d-flex align-center mb-20">
             <div
               style={{ backgroundImage: 'url(/img/sneakers/1.jpg)' }}
               className="cartItemImg"></div>
@@ -28,8 +38,32 @@ export const Drawer = () => {
               <b>12 999 руб.</b>
             </div>
             <img className="remove" src="/img/remove.svg" alt="remove" />
+          </div> */}
+            {cartItems.map((obj) => (
+              <div className="cartItem d-flex align-center mb-20">
+                <div style={{ backgroundImage: `url(${obj.img})` }} className="cartItemImg"></div>
+                <div className="mr-10 flex">
+                  <p className="mb-5">{obj.title}</p>
+                  <b>{obj.price} руб.</b>
+                </div>
+                <img
+                  className="remove"
+                  src="/img/remove.svg"
+                  alt="remove"
+                  onClick={() => onRemove(obj.id)}
+                />
+              </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="noItems">
+            <h1>Noooooooo</h1>
+            <button onClick={() => setCartOpened(false)} className="greenButton">
+              back
+              <img src="/img/arrow.svg" alt="arrow" />
+            </button>
+          </div>
+        )}
         <div className="cartTotalBlock">
           <ul>
             <li>
